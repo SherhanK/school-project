@@ -17,11 +17,11 @@ def run_task():
     with open("tasks.json", 'r', encoding='utf-8') as f:
         tasks_data = json.load(f)
 
-    with open("comp.json", 'r', encoding='utf-8') as f:
+    with open("test.json", 'r', encoding='utf-8') as f:
         comp_data = json.load(f)
 
     task_num = comp_data['task_num']
-    task = tasks_data['tasks'][task_num]
+    task = next((task for task in tasks_data['tasks'] if task['num'] == task_num), None)
 
     io_tests = task['io_data']
 
