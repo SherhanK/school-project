@@ -1,12 +1,17 @@
 import subprocess
 import json
-import bson
-def convert_bin_to_py(bin_file):
-    with open(bin_file, 'rb') as bfile:
-        data = bson.deserialize(bfile.read())
-    with open("py_tasks.py", 'w', encoding='utf-8') as pfile:
-        pfile.write("data = ")
-        pfile.write(json.dumps(data, indent=4))
+
+def process_json_file(json_file):
+    with open(json_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    binary_code = data.get("code", "")
+
+    byte_chunks = [binary_code[i:i + 8] for i in range(0, len(binary_code), 8)]
+    ascii_string = ''.join([chr(int(b, 2)) for b in byte_chunks])
+    
+    with open("py_task.py", 'w', encoding='utf-8') as py_file:
+        py_file.write(ascii_string)
 
 def run_task():
     with open("tasks.json", 'r', encoding='utf-8') as f:
@@ -49,5 +54,8 @@ def run_task():
     print(f"Пройдено тестов: {passed_tests}")
     print(f"Не пройдено тестов: {failed_tests}")
 
-if __name__ == "__main__":
-    run_task()
+
+
+
+process_json_file("test.json")
+run_task()
