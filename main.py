@@ -98,20 +98,6 @@ def check_stars_class(file):
         with open('user_info.json', 'w', encoding='utf-8') as json_file:
             json.dump(user_info, json_file, ensure_ascii=False, indent=4)
         return user_info
-    
-def check_task_with_code(file):
-    with open(file) as f:
-        data = json.load(f)
-    code = data['code']
-    txt = base64.b64decode(data['txt']).decode('utf-8')
-    with open('task.txt', 'w', encoding='utf-8') as f:
-        f.write(txt)
-    with open('task.txt', 'r', encoding='utf-8') as f:
-        with open('task.py', 'w', encoding='utf-8') as f2:
-            f2.write('def main():\n')
-            for line in f:
-                f2.write(f'    {line}')
-            f2.write('if __name__ == "__main__":\n    main()')
 
 
 
