@@ -67,12 +67,12 @@ def star_add(file):
     cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
     user_id = cursor.fetchone()[0]
     today = date.today()
-    cursor.execute("INSERT INTO tasks_status (student_id, id_task, result, date) VALUES (?, ?, ?, ?)", (user_id, task_num, '100/100', today.strftime("%d.%m.%Y")))
+    cursor.execute("INSERT INTO tasks_status (student_id, id_task, result, date) VALUES (?, ?, ?, ?)", (user_id, task_num, '1/1', today.strftime("%d.%m.%Y")))
     cursor.execute("SELECT id_test FROM tasks_status WHERE student_id = ? ORDER BY id_test DESC LIMIT 1", (user_id,))
     test_num = cursor.fetchone()[0]
     cursor.execute("SELECT id_test FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
     if not cursor.fetchone():
-        cursor.execute("INSERT INTO student_tasks (id_student, id_test, id_task) VALUES (?, ?, ?)", (user_id, test_num, task_num))
+        cursor.execute("INSERT INTO student_tasks (id_student, id_test, id_task, best_result) VALUES (?, ?, ?, ?)", (user_id, test_num, task_num, "1/1"))
     else:
         cursor.execute("SELECT id_test FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
         last_test = cursor.fetchone()[0]
