@@ -63,18 +63,28 @@ def run_task():
     test_num = cursor.fetchone()[0]
     cursor.execute("SELECT id_test FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
     if not cursor.fetchone():
-        cursor.execute("INSERT INTO student_tasks (id_student, id_test, id_task) VALUES (?, ?, ?)", (user_id, test_num, task_num))
+        cursor.execute("INSERT INTO student_tasks (id_student, id_test, id_task, best_result) VALUES (?, ?, ?, ?)", (user_id, test_num, task_num, res))
     else:
         cursor.execute("SELECT id_test FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
-        last_test = cursor.fetchone()[0]
-        now_test = f"{last_test}/{test_num}"
-        cursor.execute("UPDATE student_tasks SET id_test =  ? WHERE id_student = ? AND id_task = ?", (now_test, user_id, task_num))
+        last_test = cursor.fetchone()
+        last_test_num = ""
+        for i in range(len(last_test)):
+            last_test_num += last_test[i]
+        now_test = f"{last_test_num}/{test_num}"
+        print(last_test, last_test_num, now_test)
+        cursor.execute("SELECT best_result FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
+        max_result = cursor.fetchone()[0]
+        al = max_result.split('/')[0]
+        an = res.split('/')[0]
+        if int(an) > int(al):
+            cursor.execute("UPDATE student_tasks SET id_test =  ?, best_result = ? WHERE id_student = ? AND id_task = ?", (now_test, res, user_id, task_num))
+        else:
+            cursor.execute("UPDATE student_tasks SET id_test =  ? WHERE id_student = ? AND id_task = ?", (now_test, user_id, task_num))
     conn.commit()
     conn.close()
     print(f"\nВсего тестов: {passed_tests + failed_tests}")
     print(f"Пройдено тестов: {passed_tests}")
     print(f"Не пройдено тестов: {failed_tests}")
-
 
 
 
