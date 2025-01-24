@@ -15,8 +15,8 @@ sql_create = '''CREATE TABLE users(
     teacher TEXT);'''
 
 sql_create2 = '''CREATE TABLE tasks_status(
-    id_test INTEGER PRIMARY KEY AUTOINCREMENT,
-    student_id INTEGER REFERENCES users(id),
+    id_test INTEGER,
+    student_id INTEGER PRIMARY KEY REFERENCES users(id),
     id_task INTEGER,
     result TEXT,
     bin_code TEXT,
@@ -24,8 +24,8 @@ sql_create2 = '''CREATE TABLE tasks_status(
 );'''
 
 sql_create3 = '''CREATE TABLE student_tasks(
-    id_student INTEGER REFERENCES users(id),
-    id_test INTEGER REFERENCES tasks_status(id_test),
+    id_student INTEGER PRIMARY KEY REFERENCES users(id),
+    id_test INTEGER,
     id_task INTEGER
 );'''
 
