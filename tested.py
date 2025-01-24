@@ -1,7 +1,9 @@
 import subprocess
 import json
+import sqlite3
+from datetime import date
 
-def process_json_file(json_file):
+def binary_to_python(json_file):
     with open(json_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
@@ -22,6 +24,7 @@ def run_task():
 
     task_num = comp_data['task_num']
     task = next((task for task in tasks_data['tasks'] if task['num'] == task_num), None)
+    email = comp_data['email']
 
     io_tests = task['io_data']
 
@@ -49,7 +52,25 @@ def run_task():
             print("  Ожидалось:", expected_output)
             print("  Получено:", actual_output)
             failed_tests += 1
-
+    res = f"{passed_tests}/{passed_tests + failed_tests}"
+    conn = sqlite3.connect('ItPying_users.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+    user_id = cursor.fetchone()[0]
+    today = date.today()
+    cursor.execute("INSERT INTO tasks_status (student_id, id_task, result, date, bin_code) VALUES (?, ?, ?, ?, ?)", (user_id, task_num, res, today.strftime("%d.%m.%Y"), comp_data['code']))
+    cursor.execute("SELECT id_test FROM tasks_status WHERE student_id = ? ORDER BY id_test DESC LIMIT 1", (user_id,))
+    test_num = cursor.fetchone()[0]
+    cursor.execute("SELECT id_test FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
+    if not cursor.fetchone():
+        cursor.execute("INSERT INTO student_tasks (id_student, id_test, id_task) VALUES (?, ?, ?)", (user_id, test_num, task_num))
+    else:
+        cursor.execute("SELECT id_test FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
+        last_test = cursor.fetchone()[0]
+        now_test = f"{last_test}/{test_num}"
+        cursor.execute("UPDATE student_tasks SET id_test =  ? WHERE id_student = ? AND id_task = ?", (now_test, user_id, task_num))
+    conn.commit()
+    conn.close()
     print(f"\nВсего тестов: {passed_tests + failed_tests}")
     print(f"Пройдено тестов: {passed_tests}")
     print(f"Не пройдено тестов: {failed_tests}")
@@ -57,5 +78,5 @@ def run_task():
 
 
 
-process_json_file("test.json")
+binary_to_python("test.json")
 run_task()
