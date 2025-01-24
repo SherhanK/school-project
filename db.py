@@ -24,9 +24,10 @@ sql_create2 = '''CREATE TABLE tasks_status(
 );'''
 
 sql_create3 = '''CREATE TABLE student_tasks(
-    id_student INTEGER PRIMARY KEY REFERENCES users(id),
+    id_student INTEGER REFERENCES users(id),
     id_test TEXT,
-    id_task INTEGER
+    id_task INTEGER,
+    best_result TEXT
 );'''
 
 cursor_db.execute(sql_create)
