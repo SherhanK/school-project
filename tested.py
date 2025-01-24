@@ -71,7 +71,6 @@ def run_task():
         for i in range(len(last_test)):
             last_test_num += last_test[i]
         now_test = f"{last_test_num}/{test_num}"
-        print(last_test, last_test_num, now_test)
         cursor.execute("SELECT best_result FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
         max_result = cursor.fetchone()[0]
         al = max_result.split('/')[0]
