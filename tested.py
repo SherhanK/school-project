@@ -87,8 +87,3 @@ def run_task():
     print(f"\nВсего тестов: {passed_tests + failed_tests}")
     print(f"Пройдено тестов: {passed_tests}")
     print(f"Не пройдено тестов: {failed_tests}")
-
-
-
-binary_to_python("test.json")
-run_task()
