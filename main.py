@@ -102,16 +102,17 @@ def check_stars_class(file):
     with open(file, encoding='utf-8') as f:
         data = json.load(f)
     clas = data['class']
+    teacher = data['teacher']
     conn = sqlite3.connect('ItPying_users.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT stars, name FROM users WHERE class = ?", (clas))
+    cursor.execute("SELECT name, stars FROM users WHERE class = ? AND teacher = ?", (clas, teacher))
     result = cursor.fetchall()
     conn.close()
     if result:
-        stars, name = result
         user_info = {
-            "name": name,
-            "stars": stars
+            "class": clas,
+            "teacher": teacher,
+            "students": [{"name": name, "stars": stars} for name, stars in result]
         }
         with open('user_info.json', 'w', encoding='utf-8') as json_file:
             json.dump(user_info, json_file, ensure_ascii=False, indent=4)
