@@ -25,6 +25,7 @@ def run_task():
     task_num = comp_data['task_num']
     task = next((task for task in tasks_data['tasks'] if task['num'] == task_num), None)
     email = comp_data['email']
+    star_n = comp_data['stars']
 
     io_tests = task['io_data']
 
@@ -79,6 +80,8 @@ def run_task():
             cursor.execute("UPDATE student_tasks SET id_test =  ?, best_result = ? WHERE id_student = ? AND id_task = ?", (now_test, res, user_id, task_num))
         else:
             cursor.execute("UPDATE student_tasks SET id_test =  ? WHERE id_student = ? AND id_task = ?", (now_test, user_id, task_num))
+    if passed_tests == passed_tests + failed_tests:
+        cursor.execute("UPDATE users SET stars = stars + ? WHERE email = ?", (star_n, email))
     conn.commit()
     conn.close()
     print(f"\nВсего тестов: {passed_tests + failed_tests}")
