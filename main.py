@@ -37,23 +37,23 @@ def auth(file):
                     }
                     with open('answer.json', 'w', encoding='utf-8') as json_file:
                         json.dump(user_info, json_file, ensure_ascii=False, indent=4)
-                    return user_info
 
             elif role == 'Учитель':
                 conn = sqlite3.connect('ItPying_users.db')
                 cursor = conn.cursor()
-                cursor.execute("SELECT role, name FROM users WHERE email = ?", (email,))
-                user_data = cursor.fetchone()
+                cursor.execute("SELECT name FROM users WHERE email = ?", (email,))
+                teacher_name = cursor.fetchone()[0]
+                cursor.execute("SELECT name, stars, class FROM users WHERE teacher = ? AND role = 'Ученик'", (teacher_name,))
+                students = cursor.fetchall()
                 conn.close()
-                if user_data:
-                    role, name = user_data
-                    user_info = {
-                        "name": name,
-                        "role": role
-                    }
-                    with open('answer.json', 'w', encoding='utf-8') as json_file:
-                        json.dump(user_info, json_file, ensure_ascii=False, indent=4)
-                    return user_info
+                student_list = [{"name": student[0], "stars": student[1], "class": student[2]} for student in students]
+                user_info = {
+                    "name": teacher_name,
+                    "role": role,
+                    "students": student_list
+                }
+                with open('answer.json', 'w', encoding='utf-8') as json_file:
+                    json.dump(user_info, json_file, ensure_ascii=False, indent=4)
 
     except FileNotFoundError as e:
         error_data = {
@@ -112,7 +112,6 @@ def star_add(file):
 
         conn.commit()
         conn.close()
-        return True
 
     except Exception as e:
         error_data = {
@@ -140,7 +139,6 @@ def add_user(file):
         cursor.execute("INSERT INTO users (name, email, password, role, class, stars, raiting, teacher) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (name, email, password, role, clas, 0, 0, teacher))
         conn.commit()
         conn.close()
-        return True
 
     except Exception as e:
         error_data = {
@@ -304,6 +302,9 @@ def run_task():
         }
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+
+
 
 
 def check_file_type(file):
