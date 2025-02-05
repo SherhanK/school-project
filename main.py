@@ -137,8 +137,8 @@ def star_add(file):
         cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
         user_id = cursor.fetchone()[0]
         today = date.today()
-        cursor.execute("INSERT INTO tasks_status (student_id, id_task, result, date) VALUES (?, ?, ?, ?)", (user_id, task_num, '1/1', today.strftime("%d.%m.%Y")))
-        cursor.execute("SELECT id_test FROM tasks_status WHERE student_id = ? ORDER BY id_test DESC LIMIT 1", (user_id,))
+        cursor.execute("INSERT INTO test_status (student_id, id_task, result, date) VALUES (?, ?, ?, ?)", (user_id, task_num, '1/1', today.strftime("%d.%m.%Y")))
+        cursor.execute("SELECT id_test FROM test_status WHERE student_id = ? ORDER BY id_test DESC LIMIT 1", (user_id,))
         test_num = cursor.fetchone()[0]
         cursor.execute("SELECT id_test FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
 
@@ -400,8 +400,8 @@ def run_task():
         cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
         user_id = cursor.fetchone()[0]
         today = date.today()
-        cursor.execute("INSERT INTO tasks_status (student_id, id_task, result, date, bin_code) VALUES (?, ?, ?, ?, ?)", (user_id, task_num, res, today.strftime("%d.%m.%Y"), comp_data['code']))
-        cursor.execute("SELECT id_test FROM tasks_status WHERE student_id = ? ORDER BY id_test DESC LIMIT 1", (user_id,))
+        cursor.execute("INSERT INTO test_status (student_id, id_task, result, date, bin_code) VALUES (?, ?, ?, ?, ?)", (user_id, task_num, res, today.strftime("%d.%m.%Y"), comp_data['code']))
+        cursor.execute("SELECT id_test FROM test_status WHERE student_id = ? ORDER BY id_test DESC LIMIT 1", (user_id,))
         test_num = cursor.fetchone()[0]
         cursor.execute("SELECT id_test FROM student_tasks WHERE id_student = ? AND id_task = ?", (user_id, task_num))
 
@@ -554,11 +554,16 @@ def check_test(file):
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
         user_id = cursor.fetchone()[0]
-        cursor.execute("SELECT result, date, bin_code FROM tasks_status WHERE id_task = ? AND id_test = ? AND student_id = ?", (id_task, id_test, user_id))
+        cursor.execute("SELECT result, date, bin_code FROM test_status WHERE id_task = ? AND id_test = ? AND student_id = ?", (id_task, id_test, user_id))
         result = cursor.fetchone()
         conn.close()
+        result_data = {
+            "result": result[0],
+            "date": result[1],
+            "bin_code": result[2]
+        }
         with open("answer.json", 'w', encoding='utf-8') as f:
-            json.dump(result, f, ensure_ascii=False, indent=4)
+            json.dump(result_data, f, ensure_ascii=False, indent=4)
 
     except FileNotFoundError as e:
         error_data = {
