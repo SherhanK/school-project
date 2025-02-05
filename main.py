@@ -72,6 +72,42 @@ def auth(file):
         }
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except ValueError as e:
+        error_data = {
+            "error": "UserNotFoundError",
+            "message": str(e),
+            "details": f"Пользователь с email {email} не найден."
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except sqlite3.Error as e:
+        error_data = {
+            "error": "DatabaseError",
+            "message": "Произошла ошибка в базе данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except TypeError as e:
+        error_data = {
+            "error": "TypeError",
+            "message": "Некорректный тип данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except AttributeError as e:
+        error_data = {
+            "error": "AttributeError",
+            "message": "Некорректный атрибут.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
 
     except Exception as e:
         error_data = {
@@ -81,6 +117,7 @@ def auth(file):
         }
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
+
 
 
 def star_add(file):
@@ -109,9 +146,38 @@ def star_add(file):
             last_test = cursor.fetchone()[0]
             now_test = f"{last_test}/{test_num}"
             cursor.execute("UPDATE student_tasks SET id_test =  ? WHERE id_student = ? AND id_task = ?", (now_test, user_id, task_num))
-
         conn.commit()
         conn.close()
+
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump({"message": "Задание успешно добавлено."}, f, ensure_ascii=False, indent=4)
+
+    except ValueError as e:
+        error_data = {
+            "error": "UserNotFoundError",
+            "message": str(e),
+            "details": f"Пользователь с email {email} не найден."
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except TypeError as e:
+        error_data = {
+            "error": "TypeError",
+            "message": "Некорректный тип данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except AttributeError as e:
+        error_data = {
+            "error": "AttributeError",
+            "message": "Некорректный атрибут.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
 
     except Exception as e:
         error_data = {
@@ -140,6 +206,27 @@ def add_user(file):
         conn.commit()
         conn.close()
 
+        with open('answer.json', 'w', encoding='utf-8') as f:
+            json.dump({"message": "Пользователь успешно добавлен."}, f, ensure_ascii=False, indent=4)
+
+    except TypeError as e:
+        error_data = {
+            "error": "TypeError",
+            "message": "Некорректный тип данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except AttributeError as e:
+        error_data = {
+            "error": "AttributeError",
+            "message": "Некорректный атрибут.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
     except Exception as e:
         error_data = {
             "error": "CriticalError",
@@ -148,7 +235,6 @@ def add_user(file):
         }
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
-
 
 def check_stars_class(file):
     try:
@@ -171,6 +257,61 @@ def check_stars_class(file):
             }
             with open('answer.json', 'w', encoding='utf-8') as json_file:
                 json.dump(user_info, json_file, ensure_ascii=False, indent=4)
+
+    except FileNotFoundError as e:
+        error_data = {
+            "error": "FileNotFoundError",
+            "message": f"Файл {file} не найден.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except json.JSONDecodeError as e:
+        error_data = {
+            "error": "JSONDecodeError",
+            "message": "Некорректный формат JSON в файле.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+
+    except sqlite3.OperationalError as e:
+        error_data = {
+            "error": "OperationalError",
+            "message": "Произошла ошибка при выполнении запроса к базе данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except sqlite3.IntegrityError as e:
+        error_data = {
+            "error": "IntegrityError",
+            "message": "Произошла ошибка при выполнении запроса к базе данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except TypeError as e:
+        error_data = {
+            "error": "TypeError",
+            "message": "Некорректный тип данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except AttributeError as e:
+        error_data = {
+            "error": "AttributeError",
+            "message": "Некорректный атрибут.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
 
     except Exception as e:
         error_data = {
@@ -294,6 +435,15 @@ def run_task():
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(result_data, f, ensure_ascii=False, indent=4)
 
+    except ValueError as e:
+        error_data = {
+            "error": "UserNotFoundError",
+            "message": str(e),
+            "details": f"Пользователь с email {email} не найден."
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
     except Exception as e:
         error_data = {
             "error": "CriticalError",
@@ -354,6 +504,24 @@ def check_tests_for_user(file):
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
 
+    except TypeError as e:
+        error_data = {
+            "error": "TypeError",
+            "message": "Некорректный тип данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except AttributeError as e:
+        error_data = {
+            "error": "AttributeError",
+            "message": "Некорректный атрибут.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
     except ValueError as e:
         error_data = {
             "error": "UserNotFoundError",
@@ -371,8 +539,6 @@ def check_tests_for_user(file):
         }
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
-
-
 
 def check_file_type(file):
     try:
@@ -410,6 +576,24 @@ def check_file_type(file):
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
 
+    except TypeError as e:
+        error_data = {
+            "error": "TypeError",
+            "message": "Некорректный тип данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except AttributeError as e:
+        error_data = {
+            "error": "AttributeError",
+            "message": "Некорректный атрибут.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
     except Exception as e:
         error_data = {
             "error": "CriticalError",
@@ -418,3 +602,5 @@ def check_file_type(file):
         }
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+
