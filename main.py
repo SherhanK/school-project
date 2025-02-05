@@ -254,8 +254,6 @@ def check_stars_class(file):
 
         if result:
             user_info = {
-                "class": clas,
-                "teacher": teacher,
                 "students": [{"name": name, "stars": stars} for name, stars in result]
             }
             with open('answer.json', 'w', encoding='utf-8') as json_file:
