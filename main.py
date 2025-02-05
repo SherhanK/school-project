@@ -305,6 +305,7 @@ def run_task():
 
 
 def check_tests_for_user(file):
+    try:
         with open(file, encoding='utf-8') as f:
             data = json.load(f)
         email = data['email']
@@ -326,6 +327,51 @@ def check_tests_for_user(file):
             test_data.append(result_data)
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(test_data, f, ensure_ascii=False, indent=4)
+    except FileNotFoundError as e:
+        error_data = {
+            "error": "FileNotFoundError",
+            "message": f"Файл {file} не найден.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except json.JSONDecodeError as e:
+        error_data = {
+            "error": "JSONDecodeError",
+            "message": "Некорректный формат JSON в файле.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except sqlite3.Error as e:
+        error_data = {
+            "error": "DatabaseError",
+            "message": "Ошибка при работе с базой данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except ValueError as e:
+        error_data = {
+            "error": "UserNotFoundError",
+            "message": str(e),
+            "details": f"Пользователь с email {email} не найден."
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except Exception as e:
+        error_data = {
+            "error": "CriticalError",
+            "message": "Произошла критическая ошибка.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
 
 
 def check_file_type(file):
