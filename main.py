@@ -455,7 +455,7 @@ def run_task():
             json.dump(error_data, f, ensure_ascii=False, indent=4)
 
 
-def check_tests_for_user(file):
+def check_tasks_user(file):
     try:
         with open(file, encoding='utf-8') as f:
             data = json.load(f)
@@ -636,6 +636,10 @@ def check_file_type(file):
         elif func_type == "code_task":
             binary_to_python(file)
             run_task()
+        elif func_type == "test_info":
+            check_test(file)
+        elif func_type == "task_user":
+            check_tasks_user(file)
 
     except FileNotFoundError as e:
         error_data = {
