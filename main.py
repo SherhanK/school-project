@@ -610,10 +610,19 @@ def check_test(file):
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
 
-    except TypeError as e:
+    except ValueError as e:
         error_data = {
-            "error": "TypeError",
-            "message": "Некорректный тип данных.",
+            "error": "UserNotFoundError",
+            "message": f"Пользователь с email {email} не найден.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except Exception as e:
+        error_data = {
+            "error": "CriticalError",
+            "message": "Произошла критическая ошибка.",
             "details": str(e)
         }
         with open("answer.json", 'w', encoding='utf-8') as f:
