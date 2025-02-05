@@ -304,7 +304,28 @@ def run_task():
             json.dump(error_data, f, ensure_ascii=False, indent=4)
 
 
+def check_tests_for_user(file):
+        with open(file, encoding='utf-8') as f:
+            data = json.load(f)
+        email = data['email']
 
+        conn = sqlite3.connect('ItPying_users.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+        user_id = cursor.fetchone()[0]
+        cursor.execute("SELECT id_test, id_task, best_result FROM student_tasks WHERE id_student = ?", (user_id,))
+        tests = cursor.fetchall()
+        conn.close()
+        test_data = []
+        for test in tests:
+            result_data = {
+                "id_test": test[0],
+                "id_task": test[1],
+                "best_result": test[2]
+            }
+            test_data.append(result_data)
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(test_data, f, ensure_ascii=False, indent=4)
 
 
 def check_file_type(file):
