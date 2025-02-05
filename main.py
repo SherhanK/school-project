@@ -54,6 +54,9 @@ def auth(file):
                 }
                 with open('answer.json', 'w', encoding='utf-8') as json_file:
                     json.dump(user_info, json_file, ensure_ascii=False, indent=4)
+        else:
+            with open('answer.json', 'w', encoding='utf-8') as f:
+                json.dump({"message": "Неправильный логин или пароль"}, f, ensure_ascii=False, indent=4)
 
     except FileNotFoundError as e:
         error_data = {
