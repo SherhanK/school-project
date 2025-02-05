@@ -540,6 +540,79 @@ def check_tests_for_user(file):
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
 
+
+def check_test(file):
+    try:
+        with open(file, encoding='utf-8') as f:
+            data = json.load(f)
+        id_test = data['id_test']
+        id_task = data['id_task']
+        email = data['email']
+
+        conn = sqlite3.connect('ItPying_users.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
+        user_id = cursor.fetchone()[0]
+        cursor.execute("SELECT result, date, bin_code FROM tasks_status WHERE id_task = ? AND id_test = ? AND student_id = ?", (id_task, id_test, user_id))
+        result = cursor.fetchone()
+        conn.close()
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(result, f, ensure_ascii=False, indent=4)
+
+    except FileNotFoundError as e:
+        error_data = {
+            "error": "FileNotFoundError",
+            "message": f"Файл {file} не найден.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except json.JSONDecodeError as e:
+        error_data = {
+            "error": "JSONDecodeError",
+            "message": "Некорректный формат JSON в файле.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except sqlite3.Error as e:
+        error_data = {
+            "error": "DatabaseError",
+            "message": "Ошибка при работе с базой данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except TypeError as e:
+        error_data = {
+            "error": "TypeError",
+            "message": "Некорректный тип данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+    
+    except AttributeError as e:
+        error_data = {
+            "error": "AttributeError",
+            "message": "Некорректный атрибут.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
+    except TypeError as e:
+        error_data = {
+            "error": "TypeError",
+            "message": "Некорректный тип данных.",
+            "details": str(e)
+        }
+        with open("answer.json", 'w', encoding='utf-8') as f:
+            json.dump(error_data, f, ensure_ascii=False, indent=4)
+
 def check_file_type(file):
     try:
         with open(file, encoding='utf-8') as f:
@@ -602,5 +675,3 @@ def check_file_type(file):
         }
         with open("answer.json", 'w', encoding='utf-8') as f:
             json.dump(error_data, f, ensure_ascii=False, indent=4)
-    
-
