@@ -320,7 +320,7 @@ def check_tests_for_user(file):
         test_data = []
         for test in tests:
             result_data = {
-                "id_test": test[0],
+                "id_test": test[0].split('/'),
                 "id_task": test[1],
                 "best_result": test[2]
             }
