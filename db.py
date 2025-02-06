@@ -14,7 +14,7 @@ sql_create = '''CREATE TABLE users(
     stars INT,
     teacher TEXT);'''
 
-sql_create2 = '''CREATE TABLE tasks_status(
+sql_create2 = '''CREATE TABLE tests_status(
     id_test INTEGER PRIMARY KEY AUTOINCREMENT,
     student_id INTEGER REFERENCES users(id),
     id_task INTEGER,
